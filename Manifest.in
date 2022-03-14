@@ -1,0 +1,7 @@
+
+recursive-include .github *
+recursive-include text_licenses *
+recursive-include markdown_licenses *
+
+recursive-exclude * __pycache__
+recursive-exclude * *.py[co]
