@@ -1,0 +1,23 @@
+{
+  "name": "multitool",
+  "version": "1.0.0",
+  "description": "![GitHub repo size](https://img.shields.io/github/repo-size/alexpdev/multitool) ![GitHub contributors](https://img.shields.io/github/contributors/alexpdev/multitool) ![GitHub stars](https://img.shields.io/github/stars/alexpdev/multitool?style=social) ![GitHub forks](https://img.shields.io/github/forks/alexpdev/multitool?style=social)",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alexpdev/multitool.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/alexpdev/multitool/issues"
+  },
+  "homepage": "https://github.com/alexpdev/multitool#readme"
+}
