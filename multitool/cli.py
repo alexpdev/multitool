@@ -1,6 +1,6 @@
 import sys
 import argparse
-from multitool.runner import Runner, binprint
+from multitool.runner import binprint
 
 
 def execute(args=None):
@@ -19,13 +19,16 @@ def execute(args=None):
     binparser = parsers.add_parser("bin", help="Convert integers to binary")
     binparser.add_argument("value", help="Integer to convert", action="store")
     binparser.set_defaults(func=binprint)
-    parser.add_argument(
-        "--syn",
+    synparse = parsers.add_parser(
+        "syn", alias="synonym"
+    )
+    synparse.add_arguement(
+        "word",
         help="Show Synonyms for word",
         action="store",
-        dest="syn",
         metavar="<word>"
     )
+    synparse.set_defaults()
     parser.add_argument(
         "--start",
         help="Show words that start with <text>",
@@ -67,23 +70,6 @@ def execute(args=None):
 
     namespace = parser.parse_args(args[1:])
     if namespace:
-
         print(namespace)
         namespace.func(namespace)
-
-        # process_args(**vars(namespace))
-
     return
-
-def process_args(count=None, length=None, end=None,
-                 contains=None, start=None, syn=None):
-
-    runner = Runner()
-    if contains:
-        return runner.contains(contains, count, length)
-    if syn:
-        return runner.synonyms(syn, count, length)
-    if start:
-        return runner.start(start, count, length)
-    if end:
-        return runner.end(end, count, length)
