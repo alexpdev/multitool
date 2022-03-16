@@ -1,6 +1,6 @@
 import sys
 import argparse
-from multitool.runner import Runner
+from multitool.runner import Runner, binprint
 
 
 def execute(args=None):
@@ -15,6 +15,10 @@ def execute(args=None):
         description="Multitool CLI",
         prefix_chars="-"
     )
+    parsers = parser.add_subparsers()
+    binparser = parsers.add_parser("bin", help="Convert integers to binary")
+    binparser.add_argument("value", help="Integer to convert", action="store")
+    binparser.set_defaults(func=binprint)
     parser.add_argument(
         "--syn",
         help="Show Synonyms for word",
@@ -60,11 +64,20 @@ def execute(args=None):
         metavar="<n>",
         action="store"
     )
+
     namespace = parser.parse_args(args[1:])
-    return process_args(**vars(namespace))
+    if namespace:
+
+        print(namespace)
+        namespace.func(namespace)
+
+        # process_args(**vars(namespace))
+
+    return
 
 def process_args(count=None, length=None, end=None,
                  contains=None, start=None, syn=None):
+
     runner = Runner()
     if contains:
         return runner.contains(contains, count, length)

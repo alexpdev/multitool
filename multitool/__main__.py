@@ -1,11 +1,10 @@
 import sys
-from multitool.cli import execute
+from multitool import execute
+
+tests = [ "TRIC", "RIGG", "LLION", "PING",  "OLLE", "TROLL"]
 
 def main():
     execute()
-
-
-tests = [ "TRIC", "RIGG", "LLION", "PING",  "OLLE", "TROLL"]
 
 if __name__ == "__main__":
     for i in tests:

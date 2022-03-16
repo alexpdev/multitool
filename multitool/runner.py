@@ -80,3 +80,8 @@ class Runner:
         if self.output:
             return self.show()
         return True
+
+
+def binprint(args):
+    value = int(args.value)
+    print(bin(value)[2:])
