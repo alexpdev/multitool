@@ -1,6 +1,6 @@
 import sys
 import argparse
-from multitool.runner import binprint
+from multitool.runner import binprint, contains, synonyms
 
 
 def execute(args=None):
@@ -19,39 +19,31 @@ def execute(args=None):
     binparser = parsers.add_parser("bin", help="Convert integers to binary")
     binparser.add_argument("value", help="Integer to convert", action="store")
     binparser.set_defaults(func=binprint)
-    synparse = parsers.add_parser(
-        "syn", alias="synonym"
-    )
-    synparse.add_arguement(
+    synparse = parsers.add_parser("syn", help="get synonyms for commong words")
+    synparse.add_argument(
         "word",
         help="Show Synonyms for word",
         action="store",
         metavar="<word>"
     )
-    synparse.set_defaults()
-    parser.add_argument(
+    synparse.set_defaults(func=synonyms)
+    containsparser = parsers.add_parser("contains", help="Show words that contain <text>.")
+
+    containsparser.add_argument(
         "--start",
         help="Show words that start with <text>",
         dest="start",
         metavar="<text>",
         action="store"
     )
-    parser.add_argument(
-        "--contains",
-        "--in",
-        help="Show words that countain <text>",
-        action="store",
-        dest="contains",
-        metavar="<text>"
-    )
-    parser.add_argument(
+    containsparser.add_argument(
         "--end",
         help="Show words that end with <text>",
         dest="end",
         metavar="<text>",
         action="store"
     )
-    parser.add_argument(
+    containsparser.add_argument(
         "-l",
         "--length",
         help="number <n> of characters in word",
@@ -59,14 +51,8 @@ def execute(args=None):
         metavar="<n>",
         action="store"
     )
-    parser.add_argument(
-        "-c",
-        "--count",
-        dest="count",
-        help="maximum number of results in output. (default=50)",
-        metavar="<n>",
-        action="store"
-    )
+    containsparser.set_defaults(func=contains)
+
 
     namespace = parser.parse_args(args[1:])
     if namespace:

@@ -3,12 +3,12 @@ import sys
 import json
 
 class Words:
-    all_words = json.load(open("assets/allWords.json"))
-    words_extended = json.load(open("assets/words.json"))
+    all_words = json.load(open("assets/Words_Length.json"))
+    word_frequencies = json.load(open("assets/Words_Frequency.json"))
+    synonyms = json.load(open("assets/Synonyms.json"))
 
 def sanatize(input):
-    clean = "".join(list(map(lambda x:" " if not x.isalpha() else x,input)))
-    return clean.upper().split(" ")
+    return input.upper()
 
 def show(output):
     sys.stdout.write("Results: ")
@@ -19,7 +19,6 @@ def show(output):
         size = 80
     space = space + 1 + len(str(len(output))) + 2
     cols, counter = size // space, 0
-    print(output)
     while counter < len(output):
         line = ""
         if len(output) - counter < cols:
@@ -29,24 +28,29 @@ def show(output):
             phrase = f"{str(i).rjust(3, '0')}. {word}  "
             line += phrase
             counter += 1
-        print(line)
     return True
 
 def contains(args):
-    output = []
-    inp = sanatize(args.val)
-    count = -1 if not count else int(count)
-    for _, word in enumerate(Words.all_words):
-        if count == 0:
-            break
-        if args.length and len(word) != int(args.length):
-            continue
-        if len([part for part in inp if part in word]) == len(inp):
-            output.append(word)
-            count -= 1
-    if output:
-        return show()
-    return True
+    if args.start or args.end:
+        if args.start:
+            start(args)
+        else:
+            end(args)
+    else:
+        output = []
+        inp = sanatize(args.val)
+        count = -1 if not count else int(count)
+        for _, word in enumerate(Words.all_words):
+            if count == 0:
+                break
+            if args.length and len(word) != int(args.length):
+                continue
+            if len([part for part in inp if part in word]) == len(inp):
+                output.append(word)
+                count -= 1
+        if output:
+            return show()
+        return True
 
 def start(args):
     output = []
@@ -83,4 +87,20 @@ def binprint(args):
     print(bin(value)[2:])
 
 def synonyms(args):
-    pass
+    w = args.word.lower()
+    collection = []
+    for entry in Words.synonyms:
+        if w in entry["word"]:
+            collection.append(entry)
+    reg = {}
+    for entry in collection:
+        if entry['word'] in reg:
+            reg[entry['word']].extend(entry['synonyms'])
+        else:
+            reg[entry['word']] = entry['synonyms']
+
+    for k,v in reg.items():
+        output = f":{k} \n"
+        for syn in v:
+            output += f"\t {syn} \n"
+        sys.stdout.write(output )
