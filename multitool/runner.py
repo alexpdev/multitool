@@ -1,16 +1,29 @@
+import json
 import os
 import sys
-import json
+
 
 class Words:
+    """
+    Namespace containing reference documents for gathering data.
+    """
+
     all_words = json.load(open("assets/Words_Length.json"))
     word_frequencies = json.load(open("assets/Words_Frequency.json"))
     synonyms = json.load(open("assets/Synonyms.json"))
 
+
 def sanatize(input):
+    """
+    Convert input command line arguments into format contained by documents.
+    """
     return input.upper()
 
+
 def show(output):
+    """
+    Format the output to show user on console screen.
+    """
     sys.stdout.write("Results: ")
     space = max([len(i) for i in output])
     try:
@@ -30,12 +43,15 @@ def show(output):
             counter += 1
     return True
 
+
 def contains(args):
+    """
+    Check if words exist that contain the partial word within the word.
+    """
     if args.start or args.end:
         if args.start:
-            start(args)
-        else:
-            end(args)
+            return start(args)
+        return end(args)
     else:
         output = []
         inp = sanatize(args.val)
@@ -50,14 +66,19 @@ def contains(args):
                 count -= 1
         if output:
             return show()
-        return True
+    return True
+
 
 def start(args):
+    """
+    Check contains but only from the start of the word.
+    """
     output = []
     inp = "".join(sanatize(args.val))
     count = -1 if not count else int(count)
     for _, word in enumerate(Words.all_words):
-        if not count: break
+        if not count:
+            break
         if args.length and len(word) != int(args.length):
             continue
         if word.startswith(inp):
@@ -67,12 +88,17 @@ def start(args):
         return show()
     return True
 
+
 def end(args):
+    """
+    Check contains but only at the end of the word.
+    """
     output = []
     inp = "".join(sanatize(args.val))
     count = -1 if not count else int(args.count)
     for _, word in enumerate(Words.all_words):
-        if not count: break
+        if not count:
+            break
         if args.length and len(word) != int(args.length):
             continue
         if word.endswith(inp) == len(inp):
@@ -82,11 +108,20 @@ def end(args):
         return show()
     return True
 
+
 def binprint(args):
+    """
+    Return binary representation of decimal digit.
+    """
     value = int(args.value)
     print(bin(value)[2:])
+    return value
+
 
 def synonyms(args):
+    """
+    Return Synonyms for the inputed word.
+    """
     w = args.word.lower()
     collection = []
     for entry in Words.synonyms:
@@ -94,13 +129,14 @@ def synonyms(args):
             collection.append(entry)
     reg = {}
     for entry in collection:
-        if entry['word'] in reg:
-            reg[entry['word']].extend(entry['synonyms'])
+        if entry["word"] in reg:
+            reg[entry["word"]].extend(entry["synonyms"])
         else:
-            reg[entry['word']] = entry['synonyms']
+            reg[entry["word"]] = entry["synonyms"]
 
-    for k,v in reg.items():
+    for k, v in reg.items():
         output = f":{k} \n"
         for syn in v:
             output += f"\t {syn} \n"
-        sys.stdout.write(output )
+        sys.stdout.write(output)
+    return output
