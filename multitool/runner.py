@@ -1,6 +1,11 @@
+from heapq import nsmallest
+import time
 import json
 import os
 import sys
+
+from multitool.wordle import solve
+from multitool.win import start_gui
 
 
 class Words:
@@ -118,25 +123,70 @@ def binprint(args):
     return value
 
 
+def mergesort(seq, word):
+    if len(seq) <= 1:
+        return seq
+    left = mergesort(seq[:len(seq) // 2], word)
+    right = mergesort(seq[len(seq) // 2:], word)
+    i = j = 0
+    lst = []
+    while i < len(left) and j < len(right):
+        if len(left[i]) < len(right[j]):
+            lst.append(left[i])
+            i += 1
+        elif len(left[i]) > len(right[j]):
+            lst.append(right[j])
+            j += 1
+        elif left[i].index(word) < right[j].index(word):
+            lst.append(left[i])
+            i += 1
+        else:
+            lst.append(right[j])
+            j += 1
+    while i < len(left):
+        lst.append(left[i])
+        i += 1
+    while j < len(right):
+        lst.append(right[j])
+        j += 1
+    return lst
+
+
+
+
 def synonyms(args):
     """
     Return Synonyms for the inputed word.
     """
     w = args.word.lower()
-    collection = []
+    precision = int(args.precision)
+    collection = {}
     for entry in Words.synonyms:
         if w in entry["word"]:
-            collection.append(entry)
-    reg = {}
-    for entry in collection:
-        if entry["word"] in reg:
-            reg[entry["word"]].extend(entry["synonyms"])
-        else:
-            reg[entry["word"]] = entry["synonyms"]
-
-    for k, v in reg.items():
-        output = f":{k} \n"
-        for syn in v:
-            output += f"\t {syn} \n"
+            if entry["word"] in collection:
+                collection[entry["word"]].extend(entry["synonyms"])
+            else:
+                collection[entry["word"]] = entry["synonyms"]
+    lst = [w]
+    if precision != 1:
+        lst = mergesort(list(collection.keys()),w)
+    m = min(len(lst), precision)
+    for item in lst[:m]:
+        output = f":{item} \n"
+        prev = []
+        for syn in collection[item]:
+            if syn not in prev:
+                prev.append(syn)
+                output += f"\t {syn} \n"
         sys.stdout.write(output)
     return output
+
+
+def wordle(args):
+    size = int(args.size)
+    print(args)
+    print(size)
+    if args.gui:
+        start_gui()
+    else:
+        solve(l=size)

@@ -75,16 +75,18 @@ def get_choice(choices):
         else:
             output += "\n" + text
             leng = len(text)
-    choice = input("Choose a word.\n")
+    print(output)
+    choice = input("Choose or enter a word.\n")
     if choice.isdigit():
         return choices[int(choice)]
-    return get_choice(choices)
+    return choice
 
 def get_words(l):
     return [i for i in json.load(open("assets/Words_Length.json")) if len(i) == l]
 
-def filter_words(l):
-    words = get_words(l)
+def filter_words(words=None, l=5):
+    if not words:
+        words = get_words(l)
     starters = filter_ideal(words)
     return starters
 
@@ -95,7 +97,7 @@ def solve(l=5):
     correct = ["" for i in range(l)]
     pos = {i:"" for i in range(l)}
     words = get_words(l)
-    starters = filter_words(l)
+    starters = filter_words(words)
     guess = get_choice(starters)
     count = 1
     while True:
@@ -108,7 +110,3 @@ def solve(l=5):
         else:
             guess = get_choice(filter_ideal(words))
         count += 1
-
-
-if __name__ == "__main__":
-    passed = solve(5)

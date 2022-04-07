@@ -1,7 +1,7 @@
 import argparse
 import sys
 
-from multitool.runner import binprint, contains, synonyms
+from multitool.runner import binprint, contains, synonyms, wordle
 
 
 def execute(args=None):
@@ -32,6 +32,15 @@ def execute(args=None):
         action="store",
         metavar="<word>",
     )
+    synparse.add_argument(
+        "-p",
+        "--precision",
+        help="how many similar words to include with the original.",
+        dest="precision",
+        action="store",
+        metavar="<n>",
+        default="1"
+    )
     synparse.set_defaults(func=synonyms)
     containsparser = parsers.add_parser(
         "contains", help="Show words that contain <text>."
@@ -61,7 +70,7 @@ def execute(args=None):
     )
     containsparser.set_defaults(func=contains)
     wordleparser = parsers.add_parser("wordle", help="wordle helper tool")
-    wordleparser.set_defaults(func="wordle")
+    wordleparser.set_defaults(func=wordle)
     wordleparser.add_argument(
         "-g",
         "--gui",
