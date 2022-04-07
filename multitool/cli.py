@@ -19,11 +19,18 @@ def execute(args=None):
     )
     parsers = parser.add_subparsers()
     binparser = parsers.add_parser("bin", help="Convert integers to binary")
-    binparser.add_argument("value", help="Integer to convert", action="store")
+    binparser.add_argument(
+        "value",
+        help="Integer to convert",
+        action="store"
+    )
     binparser.set_defaults(func=binprint)
     synparse = parsers.add_parser("syn", help="get synonyms for commong words")
     synparse.add_argument(
-        "word", help="Show Synonyms for word", action="store", metavar="<word>"
+        "word",
+        help="Show Synonyms for the word",
+        action="store",
+        metavar="<word>",
     )
     synparse.set_defaults(func=synonyms)
     containsparser = parsers.add_parser(
@@ -53,6 +60,24 @@ def execute(args=None):
         action="store",
     )
     containsparser.set_defaults(func=contains)
+    wordleparser = parsers.add_parser("wordle", help="wordle helper tool")
+    wordleparser.set_defaults(func="wordle")
+    wordleparser.add_argument(
+        "-g",
+        "--gui",
+        action="store_true",
+        help="use gui",
+        dest="gui"
+    )
+    wordleparser.add_argument(
+        "-s",
+        "--size",
+        action="store",
+        help="The number of letters in the word puzzle (default 5)",
+        default="5",
+        dest="size",
+        metavar="<int>"
+    )
 
     namespace = parser.parse_args(args[1:])
     if namespace:
