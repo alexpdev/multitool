@@ -1,7 +1,7 @@
 {
   "name": "multitool",
   "version": "0.1.0",
-  "description": "![GitHub repo size](https://img.shields.io/github/repo-size/alexpdev/multitool) ![GitHub contributors](https://img.shields.io/github/contributors/alexpdev/multitool) ![GitHub stars](https://img.shields.io/github/stars/alexpdev/multitool?style=social) ![GitHub forks](https://img.shields.io/github/forks/alexpdev/multitool?style=social)",
+  "description": "multitool is a simple cli with multiple commonly used features.",
   "directories": {
     "test": "tests"
   },

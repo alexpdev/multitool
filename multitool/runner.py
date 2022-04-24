@@ -1,11 +1,9 @@
-from heapq import nsmallest
-import time
 import json
 import os
 import sys
 
-from multitool.wordle import solve
 from multitool.win import start_gui
+from multitool.wordle import solve
 
 
 class Words:
@@ -126,8 +124,8 @@ def binprint(args):
 def mergesort(seq, word):
     if len(seq) <= 1:
         return seq
-    left = mergesort(seq[:len(seq) // 2], word)
-    right = mergesort(seq[len(seq) // 2:], word)
+    left = mergesort(seq[: len(seq) // 2], word)
+    right = mergesort(seq[len(seq) // 2 :], word)
     i = j = 0
     lst = []
     while i < len(left) and j < len(right):
@@ -152,8 +150,6 @@ def mergesort(seq, word):
     return lst
 
 
-
-
 def synonyms(args):
     """
     Return Synonyms for the inputed word.
@@ -169,7 +165,7 @@ def synonyms(args):
                 collection[entry["word"]] = entry["synonyms"]
     lst = [w]
     if precision != 1:
-        lst = mergesort(list(collection.keys()),w)
+        lst = mergesort(list(collection.keys()), w)
     m = min(len(lst), precision)
     for item in lst[:m]:
         output = f":{item} \n"
@@ -190,3 +186,12 @@ def wordle(args):
         start_gui()
     else:
         solve(l=size)
+
+
+def utf(args):
+    if args.numbers:
+        for num in args.numbers:
+            sys.stdout.write(chr(int(num)))
+    elif args.range:
+        for i in range(args.range[0], args.range[1]):
+            sys.stdout.write(chr(i))

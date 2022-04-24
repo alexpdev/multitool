@@ -50,7 +50,7 @@ def get_frequencies(words):
                 f[char] = 1
             else:
                 f[char] += 1
-    return [i for i,_ in sorted(list(f.items()), key=lambda x: x[1], reverse=True)]
+    return [i for i, _ in sorted(list(f.items()), key=lambda x: x[1], reverse=True)]
 
 
 def filter_ideal(words):
@@ -59,7 +59,7 @@ def filter_ideal(words):
     for word in words:
         ranks = [freq.index(i) for i in word]
         counts = [word.count(i) for i in word]
-        if sum(counts) == len(word) and sum(ranks) < (.75*len(ranks)) * len(ranks):
+        if sum(counts) == len(word) and sum(ranks) < (0.75 * len(ranks)) * len(ranks):
             picked.append(word)
     return picked
 
@@ -81,8 +81,10 @@ def get_choice(choices):
         return choices[int(choice)]
     return choice
 
+
 def get_words(l):
     return [i for i in json.load(open("assets/Words_Length.json")) if len(i) == l]
+
 
 def filter_words(words=None, l=5):
     if not words:
@@ -95,7 +97,7 @@ def solve(l=5):
     hints = set()
     wrong = set()
     correct = ["" for i in range(l)]
-    pos = {i:"" for i in range(l)}
+    pos = {i: "" for i in range(l)}
     words = get_words(l)
     starters = filter_words(words)
     guess = get_choice(starters)

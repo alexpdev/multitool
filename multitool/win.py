@@ -15,11 +15,12 @@
 ################################################################################
 import json
 import sys
-from multitool.wordle import filter_words, decypher_input, filter_word
 
-from PySide6.QtWidgets import *
-from PySide6.QtGui import *
 from PySide6.QtCore import *
+from PySide6.QtGui import *
+from PySide6.QtWidgets import *
+
+from multitool.wordle import decypher_input, filter_word, filter_words
 
 
 class Solver:
@@ -29,17 +30,10 @@ class Solver:
         self.hints = set()
         self.wrong = set()
         self.correct = ["" for _ in range(l)]
-        self.pos = {i:"" for i in range(l)}
+        self.pos = {i: "" for i in range(l)}
 
     def decypher(self, guess, result):
-        decypher_input(
-            self.hints,
-            self.wrong,
-            self.correct,
-            self.pos,
-            guess,
-            result
-        )
+        decypher_input(self.hints, self.wrong, self.correct, self.pos, guess, result)
 
     def filter_words(self):
         for word in self.words[::-1]:
@@ -52,8 +46,6 @@ class Solver:
             ):
                 self.words.remove(word)
         return self.words
-
-
 
 
 class Window(QMainWindow):
@@ -130,17 +122,17 @@ class Window(QMainWindow):
         self.setMenuBar(self.menubar)
         self.statusbar = QStatusBar(parent=self)
         self.setStatusBar(self.statusbar)
-        self.menubar.setObjectName(u"menubar")
-        self.setObjectName(u"MainWindow")
-        self.central.setObjectName(u"centralwidget")
-        self.layout.setObjectName(u"verticalLayout")
-        self.word_length_label.setObjectName(u"wordlengthlable")
-        self.hlayout1.setObjectName(u"horizontalLayout")
-        self.spinBox.setObjectName(u"spinBox")
-        self.listwidget.setObjectName(u"listWidget")
-        self.hlayout2.setObjectName(u"hlayout2")
-        self.button.setObjectName(u"pushButton")
-        self.statusbar.setObjectName(u"statusbar")
+        self.menubar.setObjectName("menubar")
+        self.setObjectName("MainWindow")
+        self.central.setObjectName("centralwidget")
+        self.layout.setObjectName("verticalLayout")
+        self.word_length_label.setObjectName("wordlengthlable")
+        self.hlayout1.setObjectName("horizontalLayout")
+        self.spinBox.setObjectName("spinBox")
+        self.listwidget.setObjectName("listWidget")
+        self.hlayout2.setObjectName("hlayout2")
+        self.button.setObjectName("pushButton")
+        self.statusbar.setObjectName("statusbar")
         self.toolbutton.pressed.connect(self.start_wordle)
         self.button.pressed.connect(self.filter_results)
 
@@ -151,7 +143,8 @@ class Window(QMainWindow):
 
     def filter_results(self):
         items = self.listwidget.selectedItems()
-        if len(items) != 1: return
+        if len(items) != 1:
+            return
         guess = items[0].text()
         result = ""
         for inp in self.char_edits:
@@ -200,9 +193,7 @@ class SpinBox(QSpinBox):
         self.window.solver = Solver(self.window.word_length)
 
 
-
 class CharEdit(QLineEdit):
-
     def __init__(self, parent=None, position=0):
         super().__init__(parent=parent)
         self.window = parent
