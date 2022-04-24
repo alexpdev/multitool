@@ -5,15 +5,15 @@ import sys
 from multitool.win import start_gui
 from multitool.wordle import solve
 
-
 class Words:
     """
     Namespace containing reference documents for gathering data.
     """
+    assets = os.path.join(os.path.dirname(os.path.abspath(__file__)), "assets")
 
-    all_words = json.load(open("assets/Words_Length.json"))
-    word_frequencies = json.load(open("assets/Words_Frequency.json"))
-    synonyms = json.load(open("assets/Synonyms.json"))
+    all_words = json.load(open(os.path.join(assets, "Words_Length.json")))
+    word_freq = json.load(open(os.path.join(assets, "Words_Frequency.json")))
+    synonyms = json.load(open(os.path.join(assets, "Synonyms.json")))
 
 
 def sanatize(input):
