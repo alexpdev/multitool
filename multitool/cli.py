@@ -1,7 +1,7 @@
 import argparse
 import sys
 
-from multitool.runner import binprint, contains, synonyms, wordle
+from multitool.runner import binprint, contains, synonyms, wordle, utf
 
 
 def execute(args=None):
@@ -101,18 +101,39 @@ def execute(args=None):
     utfparser.add_argument(
         "number",
         help="one or more space seperated utf-8 codepoint(s)",
-        nargs="?",
+        nargs="*",
         action="store",
-        default="None",
+        default=None,
     )
 
     utfparser.add_argument(
-        "-r", "--range", nargs=2, metavar="<number>", dest="range", action="store"
+        "-r",
+        "--range",
+        nargs=2,
+        metavar="<number>",
+        dest="range",
+        action="store"
     )
+
+    utfparser.add_argument(
+        "-l",
+        "--list",
+        help="show each code, number combo on seperate lines.",
+        action="store_true",
+        dest="list",
+    )
+
+    utfparser.add_argument(
+        "--line",
+        help="like list except prints as many combos on a line as possible",
+        action="store_true",
+        dest="line",
+    )
+
+    utfparser.set_defaults(func=utf)
 
     namespace = parser.parse_args(args[1:])
 
     if namespace:
-        print(namespace)
         namespace.func(namespace)
     return

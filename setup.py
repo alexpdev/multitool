@@ -18,5 +18,5 @@ setup(
         'multitool = multitool.__main__:main',
         'mtool = multitool.__main__:main'
     ]},
-    data_files=[("assets", ['AllWords.txt', 'en_thesaurus.jsonl.txt', 'Synonyms.json', 'Words_Frequency.json', 'Words_Length.json'])]
+    data_files=[("assets", ['assets/AllWords.txt', 'assets/Synonyms.json', 'assets/Words_Frequency.json', 'assets/Words_Length.json'])]
 )

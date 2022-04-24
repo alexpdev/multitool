@@ -189,9 +189,21 @@ def wordle(args):
 
 
 def utf(args):
-    if args.numbers:
-        for num in args.numbers:
-            sys.stdout.write(chr(int(num)))
+    sys.stdout.write('----------------------\n\n')
+    if args.number:
+        for num in args.number:
+            if args.list:
+                sys.stdout.write(f"{num} {chr(int(num))}\n")
+            elif args.line:
+                sys.stdout.write(f"({num}: {chr(int(num) )}) ")
+            else:
+                sys.stdout.write(chr(int(num)) + " ")
     elif args.range:
-        for i in range(args.range[0], args.range[1]):
-            sys.stdout.write(chr(i))
+        for i in range(int(args.range[0]), int(args.range[1])):
+            if args.list:
+                sys.stdout.write(f"{i} {chr(i)}\n")
+            elif args.line:
+                sys.stdout.write(f"({i}: {chr(i)} ) ")
+            else:
+                sys.stdout.write(chr(i))
+    sys.stdout.write('\n\n----------------------')
