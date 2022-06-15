@@ -77,13 +77,9 @@ def start(args):
     Check contains but only from the start of the word.
     """
     output = []
-    inp = "".join(sanatize(args.val))
-    count = -1 if not count else int(count)
+    inp = "".join(sanatize(args.start))
     for _, word in enumerate(Words.all_words):
-        if not count:
-            break
-        if args.length and len(word) != int(args.length):
-            continue
+        print(word)
         if word.startswith(inp):
             output.append(word)
             count -= 1
@@ -97,18 +93,15 @@ def end(args):
     Check contains but only at the end of the word.
     """
     output = []
-    inp = "".join(sanatize(args.val))
-    count = -1 if not count else int(args.count)
+    inp = "".join(sanatize(args.end))
+    count = -1 if not args.length else int(args.length)
     for _, word in enumerate(Words.all_words):
-        if not count:
-            break
-        if args.length and len(word) != int(args.length):
-            continue
-        if word.endswith(inp) == len(inp):
+        if word.endswith(inp):
+            print(word)
             output.append(word)
             count -= 1
     if output:
-        return show()
+        return show(output)
     return True
 
 

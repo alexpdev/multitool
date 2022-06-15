@@ -1,7 +1,10 @@
 #! /usr/bin/python3
 import json
 import shutil
+import os
 
+WORDFILE = os.path.join(os.path.dirname(
+           os.path.abspath(__file__)), "assets", "Words_Length.json")
 
 def filter_word(word, hints, pos, wrong, correct):
     for char in wrong:
@@ -83,7 +86,7 @@ def get_choice(choices):
 
 
 def get_words(l):
-    return [i for i in json.load(open("assets/Words_Length.json")) if len(i) == l]
+    return [i for i in json.load(open(WORDFILE)) if len(i) == l]
 
 
 def filter_words(words=None, l=5):
