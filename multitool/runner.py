@@ -23,12 +23,13 @@ def sanatize(input):
 
 
 def ordprint(namespace):
+    """
+    Convert characters to their ordinal value.
+    """
+    print(namespace)
     chars = namespace.chars
-    if len(chars) == 1:
-        show(str(ord(chars)))
-        return
-    result = ", ".join([str(ord(i)) for i in chars])
-    show(result)
+    result = ', '.join([str(ord(i)) for i in chars])
+    print(result)
     return result
 
 
@@ -120,8 +121,9 @@ def binprint(args):
     Return binary representation of decimal digit.
     """
     value = int(args.value)
-    print(bin(value)[2:])
-    return value
+    result = bin(value)[2:]
+    print(result)
+    return result
 
 
 def mergesort(seq, word):
@@ -182,6 +184,9 @@ def synonyms(args):
 
 
 def wordle(args):
+    """
+    Solve wordle puzzles.
+    """
     size = int(args.size)
     print(args)
     print(size)
@@ -191,6 +196,9 @@ def wordle(args):
 
 
 def utf(args):
+    """
+    Convert character codes to their utf-8 symbol.
+    """
     sys.stdout.write('----------------------\n\n')
     if args.number:
         for num in args.number:

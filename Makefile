@@ -62,9 +62,7 @@ lint: ## check style with flake8
 	prospector tests
 
 test: ## run tests quickly with the default Python
-	pytest tests
 	pytest tests --cov
-	pytest tests --pylint
 
 coverage: ## check code coverage quickly with the default Python
 	coverage run -m pytest tests --cov --pylint
