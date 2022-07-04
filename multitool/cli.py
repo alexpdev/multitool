@@ -1,7 +1,7 @@
 import argparse
 import sys
 
-from multitool.runner import binprint, contains, synonyms, wordle, utf
+from multitool.runner import binprint, contains, synonyms, wordle, utf, ordprint
 
 
 def execute(args=None):
@@ -25,6 +25,12 @@ def execute(args=None):
     binparser.add_argument("value", help="Integer to convert", action="store")
 
     binparser.set_defaults(func=binprint)
+
+    ordparser = parsers.add_parser("ord", help="Convert characters into ordinal")
+
+    ordparser.add_argument("chars", help="Characters to convert", action="store")
+
+    ordparser.set_defaults(func=ordprint)
 
     synparse = parsers.add_parser("syn", help="get synonyms for commong words")
 
@@ -83,10 +89,6 @@ def execute(args=None):
     wordleparser.set_defaults(func=wordle)
 
     wordleparser.add_argument(
-        "-g", "--gui", action="store_true", help="use gui", dest="gui"
-    )
-
-    wordleparser.add_argument(
         "-s",
         "--size",
         action="store",
@@ -134,6 +136,4 @@ def execute(args=None):
 
     namespace = parser.parse_args(args[1:])
 
-    if namespace:
-        namespace.func(namespace)
-    return
+    return namespace.func(namespace)

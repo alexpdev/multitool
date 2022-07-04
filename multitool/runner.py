@@ -2,7 +2,6 @@ import json
 import os
 import sys
 
-from multitool.win import start_gui
 from multitool.wordle import solve
 
 class Words:
@@ -21,6 +20,16 @@ def sanatize(input):
     Convert input command line arguments into format contained by documents.
     """
     return input.upper()
+
+
+def ordprint(namespace):
+    chars = namespace.chars
+    if len(chars) == 1:
+        show(str(ord(chars)))
+        return
+    result = ", ".join([str(ord(i)) for i in chars])
+    show(result)
+    return result
 
 
 def show(output):
@@ -68,8 +77,9 @@ def contains(args):
                 output.append(word)
                 count -= 1
         if output:
-            return show()
-    return True
+            show(output)
+            return output
+    return output
 
 
 def start(args):
@@ -85,7 +95,7 @@ def start(args):
             count -= 1
     if output:
         return show()
-    return True
+    return output
 
 
 def end(args):
@@ -102,7 +112,7 @@ def end(args):
             count -= 1
     if output:
         return show(output)
-    return True
+    return output
 
 
 def binprint(args):
@@ -175,10 +185,9 @@ def wordle(args):
     size = int(args.size)
     print(args)
     print(size)
-    if args.gui:
-        start_gui()
-    else:
-        solve(l=size)
+    solve(size)
+    return True
+
 
 
 def utf(args):
@@ -200,3 +209,4 @@ def utf(args):
             else:
                 sys.stdout.write(chr(i))
     sys.stdout.write('\n\n----------------------')
+    return True
