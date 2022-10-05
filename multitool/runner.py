@@ -1,8 +1,7 @@
 import json
 import os
 import sys
-
-from multitool.wordle import solve
+from pathlib import Path
 
 class Words:
     """
@@ -183,18 +182,6 @@ def synonyms(args):
     return output
 
 
-def wordle(args):
-    """
-    Solve wordle puzzles.
-    """
-    size = int(args.size)
-    print(args)
-    print(size)
-    solve(size)
-    return True
-
-
-
 def utf(args):
     """
     Convert character codes to their utf-8 symbol.
@@ -217,4 +204,30 @@ def utf(args):
             else:
                 sys.stdout.write(chr(i))
     sys.stdout.write('\n\n----------------------')
+    return True
+
+
+def walk_path(root):
+    if root.is_file():
+        size = os.path.getsize(root)
+        return 1, size
+    count, size = 0, 0
+    if root.is_dir():
+        for item in root.iterdir():
+            c1, s1 = walk_path(item)
+            count += c1
+            size += s1
+    return count, size
+
+def dirinfo(nspace):
+    path = Path(nspace.path)
+    count, size = walk_path(path)
+    top = "\n---------------------------------------\n"
+    out = top
+    if nspace.count:
+        out += f"{path}| File Count = {count}\n"
+    if nspace.size:
+        out += f"{path}| Total Size = {size}\n"
+    out += top
+    sys.stdout.write(out)
     return True

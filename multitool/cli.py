@@ -1,7 +1,7 @@
 import argparse
 import sys
 
-from multitool.runner import binprint, contains, synonyms, wordle, utf, ordprint
+from multitool.runner import binprint, contains, synonyms, dirinfo, utf, ordprint
 
 
 def execute(args=None):
@@ -84,20 +84,6 @@ def execute(args=None):
 
     containsparser.set_defaults(func=contains)
 
-    wordleparser = parsers.add_parser("wordle", help="wordle helper tool")
-
-    wordleparser.set_defaults(func=wordle)
-
-    wordleparser.add_argument(
-        "-s",
-        "--size",
-        action="store",
-        help="The number of letters in the word puzzle (default 5)",
-        default="5",
-        dest="size",
-        metavar="<int>",
-    )
-
     utfparser = parsers.add_parser("utf", help="print unicode characters to terminal")
 
     utfparser.add_argument(
@@ -133,6 +119,26 @@ def execute(args=None):
     )
 
     utfparser.set_defaults(func=utf)
+
+    dirparser = parsers.add_parser("dir", help="directory information")
+
+    dirparser.add_argument('path', help="directory path")
+
+    dirparser.add_argument(
+        "-s",
+        help="total size of contents",
+        dest="size",
+        action="store_true"
+    )
+
+    dirparser.add_argument(
+        "-c",
+        dest="count",
+        help="total count of all files recusively",
+        action="store_true"
+    )
+
+    dirparser.set_defaults(func=dirinfo)
 
     namespace = parser.parse_args(args[1:])
 
