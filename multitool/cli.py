@@ -144,7 +144,7 @@ def execute(args=None):
         "dup", help="Find duplicate files within the same directory"
     )
 
-    dupparser.addArgument(
+    dupparser.add_argument(
         "--auto",
         action="store_true",
         dest="auto",
