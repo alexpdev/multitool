@@ -1,7 +1,7 @@
 import argparse
 import sys
 
-from multitool.runner import binprint, contains, synonyms, wordle
+from multitool.runner import binprint, contains, synonyms, dirinfo, utf, ordprint, find_duplicates
 
 
 def execute(args=None):
@@ -25,6 +25,12 @@ def execute(args=None):
     binparser.add_argument("value", help="Integer to convert", action="store")
 
     binparser.set_defaults(func=binprint)
+
+    ordparser = parsers.add_parser("ord", help="Convert characters into ordinal")
+
+    ordparser.add_argument("chars", help="Characters to convert", action="store")
+
+    ordparser.set_defaults(func=ordprint)
 
     synparse = parsers.add_parser("syn", help="get synonyms for commong words")
 
@@ -78,41 +84,82 @@ def execute(args=None):
 
     containsparser.set_defaults(func=contains)
 
-    wordleparser = parsers.add_parser("wordle", help="wordle helper tool")
-
-    wordleparser.set_defaults(func=wordle)
-
-    wordleparser.add_argument(
-        "-g", "--gui", action="store_true", help="use gui", dest="gui"
-    )
-
-    wordleparser.add_argument(
-        "-s",
-        "--size",
-        action="store",
-        help="The number of letters in the word puzzle (default 5)",
-        default="5",
-        dest="size",
-        metavar="<int>",
-    )
-
     utfparser = parsers.add_parser("utf", help="print unicode characters to terminal")
 
     utfparser.add_argument(
         "number",
         help="one or more space seperated utf-8 codepoint(s)",
-        nargs="?",
+        nargs="*",
         action="store",
-        default="None",
+        default=None,
     )
 
     utfparser.add_argument(
-        "-r", "--range", nargs=2, metavar="<number>", dest="range", action="store"
+        "-r",
+        "--range",
+        nargs=2,
+        metavar="<number>",
+        dest="range",
+        action="store"
     )
+
+    utfparser.add_argument(
+        "-l",
+        "--list",
+        help="show each code, number combo on seperate lines.",
+        action="store_true",
+        dest="list",
+    )
+
+    utfparser.add_argument(
+        "--line",
+        help="like list except prints as many combos on a line as possible",
+        action="store_true",
+        dest="line",
+    )
+
+    utfparser.set_defaults(func=utf)
+
+    dirparser = parsers.add_parser("dir", help="directory information")
+
+    dirparser.add_argument('path', help="directory path")
+
+    dirparser.add_argument(
+        "-s",
+        help="total size of contents",
+        dest="size",
+        action="store_true"
+    )
+
+    dirparser.add_argument(
+        "-c",
+        dest="count",
+        help="total count of all files recusively",
+        action="store_true"
+    )
+
+    dirparser.set_defaults(func=dirinfo)
+
+    dupparser = parsers.add_parser(
+        "dup", help="Find duplicate files within the same directory"
+    )
+
+    dupparser.addArgument(
+        "--auto",
+        action="store_true",
+        dest="auto",
+        help="don't prompt before deleting"
+    )
+
+    dupparser.addArgument(
+        "dir",
+        action="store",
+        metavar="<dir>",
+        help="directory to search."
+    )
+
+    dupparser.set_defaults(func=find_duplicates)
 
     namespace = parser.parse_args(args[1:])
 
-    if namespace:
-        print(namespace)
-        namespace.func(namespace)
-    return
+    return namespace.func(namespace)

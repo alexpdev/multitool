@@ -1,19 +1,18 @@
 import json
 import os
 import sys
-
-from multitool.win import start_gui
-from multitool.wordle import solve
-
+from pathlib import Path
+from hashlib import sha1
 
 class Words:
     """
     Namespace containing reference documents for gathering data.
     """
+    assets = os.path.join(os.path.dirname(os.path.abspath(__file__)), "assets")
 
-    all_words = json.load(open("assets/Words_Length.json"))
-    word_frequencies = json.load(open("assets/Words_Frequency.json"))
-    synonyms = json.load(open("assets/Synonyms.json"))
+    all_words = json.load(open(os.path.join(assets, "Words_Length.json")))
+    word_freq = json.load(open(os.path.join(assets, "Words_Frequency.json")))
+    synonyms = json.load(open(os.path.join(assets, "Synonyms.json")))
 
 
 def sanatize(input):
@@ -21,6 +20,17 @@ def sanatize(input):
     Convert input command line arguments into format contained by documents.
     """
     return input.upper()
+
+
+def ordprint(namespace):
+    """
+    Convert characters to their ordinal value.
+    """
+    print(namespace)
+    chars = namespace.chars
+    result = ', '.join([str(ord(i)) for i in chars])
+    print(result)
+    return result
 
 
 def show(output):
@@ -68,8 +78,9 @@ def contains(args):
                 output.append(word)
                 count -= 1
         if output:
-            return show()
-    return True
+            show(output)
+            return output
+    return output
 
 
 def start(args):
@@ -77,19 +88,15 @@ def start(args):
     Check contains but only from the start of the word.
     """
     output = []
-    inp = "".join(sanatize(args.val))
-    count = -1 if not count else int(count)
+    inp = "".join(sanatize(args.start))
     for _, word in enumerate(Words.all_words):
-        if not count:
-            break
-        if args.length and len(word) != int(args.length):
-            continue
+        print(word)
         if word.startswith(inp):
             output.append(word)
             count -= 1
     if output:
         return show()
-    return True
+    return output
 
 
 def end(args):
@@ -97,19 +104,16 @@ def end(args):
     Check contains but only at the end of the word.
     """
     output = []
-    inp = "".join(sanatize(args.val))
-    count = -1 if not count else int(args.count)
+    inp = "".join(sanatize(args.end))
+    count = -1 if not args.length else int(args.length)
     for _, word in enumerate(Words.all_words):
-        if not count:
-            break
-        if args.length and len(word) != int(args.length):
-            continue
-        if word.endswith(inp) == len(inp):
+        if word.endswith(inp):
+            print(word)
             output.append(word)
             count -= 1
     if output:
-        return show()
-    return True
+        return show(output)
+    return output
 
 
 def binprint(args):
@@ -117,8 +121,9 @@ def binprint(args):
     Return binary representation of decimal digit.
     """
     value = int(args.value)
-    print(bin(value)[2:])
-    return value
+    result = bin(value)[2:]
+    print(result)
+    return result
 
 
 def mergesort(seq, word):
@@ -178,20 +183,71 @@ def synonyms(args):
     return output
 
 
-def wordle(args):
-    size = int(args.size)
-    print(args)
-    print(size)
-    if args.gui:
-        start_gui()
-    else:
-        solve(l=size)
-
-
 def utf(args):
-    if args.numbers:
-        for num in args.numbers:
-            sys.stdout.write(chr(int(num)))
+    """
+    Convert character codes to their utf-8 symbol.
+    """
+    sys.stdout.write('----------------------\n\n')
+    if args.number:
+        for num in args.number:
+            if args.list:
+                sys.stdout.write(f"{num} {chr(int(num))}\n")
+            elif args.line:
+                sys.stdout.write(f"({num}: {chr(int(num) )}) ")
+            else:
+                sys.stdout.write(chr(int(num)) + " ")
     elif args.range:
-        for i in range(args.range[0], args.range[1]):
-            sys.stdout.write(chr(i))
+        for i in range(int(args.range[0]), int(args.range[1])):
+            if args.list:
+                sys.stdout.write(f"{i} {chr(i)}\n")
+            elif args.line:
+                sys.stdout.write(f"({i}: {chr(i)} ) ")
+            else:
+                sys.stdout.write(chr(i))
+    sys.stdout.write('\n\n----------------------')
+    return True
+
+
+def walk_path(root):
+    if root.is_file():
+        size = os.path.getsize(root)
+        return 1, size
+    count, size = 0, 0
+    if root.is_dir():
+        for item in root.iterdir():
+            c1, s1 = walk_path(item)
+            count += c1
+            size += s1
+    return count, size
+
+def dirinfo(nspace):
+    path = Path(nspace.path)
+    count, size = walk_path(path)
+    out = ""
+    if nspace.count:
+        out += f"{path}| File Count = {count}\n"
+    if nspace.size:
+        out += f"{path}| Total Size = {size}\n"
+    show(out)
+    return True
+
+def find_duplicates(nspace):
+    path = nspace.dir
+    filenames = os.listdir(nspace.dir)
+    auto = nspace.auto
+    hashes = {}
+    for file in filenames:
+        full = os.path.join(path, file)
+        if os.path.isfile(full):
+            digest = sha1(open(full, "rb").read()).digest()
+            if digest not in hashes:
+                hashes[digest] = full
+            else:
+                if auto:
+                    os.remove(full)
+                else:
+                    print(f"Found Duplicate {full} <-> {hashes[digest]}")
+                    answer = input("Delete (Y/N):  ").lower()
+                    if "y" in answer:
+                        os.remove(full)
+    return

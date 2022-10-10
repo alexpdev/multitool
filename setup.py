@@ -10,6 +10,9 @@ setup(
     description=meta["description"],
     version=meta["version"],
     packages=["multitool"],
+    package_dir={'multitool': 'multitool'},
+    package_data={'multitool': ['assets/*']},
+    include_package_data=True,
     license=open("LICENSE", encoding="utf-8").read(),
     long_description=open("README", encoding="utf-8").read(),
     keywords=meta["keywords"],
@@ -18,5 +21,4 @@ setup(
         'multitool = multitool.__main__:main',
         'mtool = multitool.__main__:main'
     ]},
-    data_files=[("assets", ['AllWords.txt', 'en_thesaurus.jsonl.txt', 'Synonyms.json', 'Words_Frequency.json', 'Words_Length.json'])]
 )
