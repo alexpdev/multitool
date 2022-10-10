@@ -2,6 +2,7 @@ import json
 import os
 import sys
 from pathlib import Path
+from hashlib import sha1
 
 class Words:
     """
@@ -222,12 +223,31 @@ def walk_path(root):
 def dirinfo(nspace):
     path = Path(nspace.path)
     count, size = walk_path(path)
-    top = "\n---------------------------------------\n"
-    out = top
+    out = ""
     if nspace.count:
         out += f"{path}| File Count = {count}\n"
     if nspace.size:
         out += f"{path}| Total Size = {size}\n"
-    out += top
-    sys.stdout.write(out)
+    show(out)
     return True
+
+def find_duplicates(nspace):
+    path = nspace.dir
+    filenames = os.listdir(nspace.dir)
+    auto = nspace.auto
+    hashes = {}
+    for file in filenames:
+        full = os.path.join(path, file)
+        if os.path.isfile(full):
+            digest = sha1(open(full, "rb").read()).digest()
+            if digest not in hashes:
+                hashes[digest] = full
+            else:
+                if auto:
+                    os.remove(full)
+                else:
+                    print(f"Found Duplicate {full} <-> {hashes[digest]}")
+                    answer = input("Delete (Y/N):  ").lower()
+                    if "y" in answer:
+                        os.remove(full)
+    return

@@ -1,7 +1,7 @@
 import argparse
 import sys
 
-from multitool.runner import binprint, contains, synonyms, dirinfo, utf, ordprint
+from multitool.runner import binprint, contains, synonyms, dirinfo, utf, ordprint, find_duplicates
 
 
 def execute(args=None):
@@ -139,6 +139,26 @@ def execute(args=None):
     )
 
     dirparser.set_defaults(func=dirinfo)
+
+    dupparser = parsers.add_parser(
+        "dup", help="Find duplicate files within the same directory"
+    )
+
+    dupparser.addArgument(
+        "--auto",
+        action="store_true",
+        dest="auto",
+        help="don't prompt before deleting"
+    )
+
+    dupparser.addArgument(
+        "dir",
+        action="store",
+        metavar="<dir>",
+        help="directory to search."
+    )
+
+    dupparser.set_defaults(func=find_duplicates)
 
     namespace = parser.parse_args(args[1:])
 
