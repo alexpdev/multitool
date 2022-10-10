@@ -1,6 +1,6 @@
 {
   "name": "apmultitool",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "multitool is a simple cli with multiple commonly used features.",
   "directories": {
     "test": "tests"
