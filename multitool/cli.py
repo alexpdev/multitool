@@ -151,7 +151,7 @@ def execute(args=None):
         help="don't prompt before deleting"
     )
 
-    dupparser.addArgument(
+    dupparser.add_argument(
         "dir",
         action="store",
         metavar="<dir>",
