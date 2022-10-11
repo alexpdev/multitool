@@ -145,10 +145,19 @@ def execute(args=None):
     )
 
     dupparser.add_argument(
+        "-a",
         "--auto",
         action="store_true",
         dest="auto",
         help="don't prompt before deleting"
+    )
+
+    dupparser.add_argument(
+        "-r",
+        "--recursive",
+        action="store_true",
+        dest="recursive",
+        help="search through folder recursively",
     )
 
     dupparser.add_argument(

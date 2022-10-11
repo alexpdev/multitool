@@ -1,5 +1,6 @@
 import json
 import os
+from reprlib import recursive_repr
 import sys
 from pathlib import Path
 from hashlib import sha1
@@ -233,21 +234,45 @@ def dirinfo(nspace):
 
 def find_duplicates(nspace):
     path = nspace.dir
-    filenames = os.listdir(nspace.dir)
     auto = nspace.auto
     hashes = {}
-    for file in filenames:
-        full = os.path.join(path, file)
-        if os.path.isfile(full):
-            digest = sha1(open(full, "rb").read()).digest()
-            if digest not in hashes:
-                hashes[digest] = full
-            else:
-                if auto:
-                    os.remove(full)
+    if nspace.recursive:
+        recursive_dup(nspace.dir, hashes, auto)
+    else:
+        filenames = os.listdir(nspace.dir)
+        for file in filenames:
+            full = os.path.join(path, file)
+            if os.path.isfile(full):
+                digest = sha1(open(full, "rb").read()).digest()
+                if digest not in hashes:
+                    hashes[digest] = full
                 else:
-                    print(f"Found Duplicate {full} <-> {hashes[digest]}")
-                    answer = input("Delete (Y/N):  ").lower()
-                    if "y" in answer:
+                    if auto:
                         os.remove(full)
-    return
+                    else:
+                        print(f"Found Duplicate {full} <-> {hashes[digest]}")
+                        answer = input("Delete (Y/N):  ").lower()
+                        if "y" in answer:
+                            os.remove(full)
+        return
+
+
+def recursive_dup(root, hashes, auto):
+    if os.path.isfile(root):
+        digest = sha1(open(root, "rb").read()).digest()
+        if digest not in hashes:
+            hashes[digest] = root
+        else:
+            if auto:
+                os.remove(root)
+            else:
+                print(f"Found Duplicate {root} <-> {hashes[digest]}")
+                answer = input("Delete (Y/N):  ").lower()
+                if "y" in answer:
+                    os.remove(root)
+        return
+    if os.path.isdir(root):
+        for filenames in os.listdir(root):
+            full = os.path.join(root, filenames)
+            recursive_dup(full, hashes, auto)
+
