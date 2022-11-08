@@ -1,7 +1,7 @@
 import json
 import os
-from reprlib import recursive_repr
 import sys
+import shutil
 from pathlib import Path
 from hashlib import sha1
 
@@ -10,7 +10,6 @@ class Words:
     Namespace containing reference documents for gathering data.
     """
     assets = os.path.join(os.path.dirname(os.path.abspath(__file__)), "assets")
-
     all_words = json.load(open(os.path.join(assets, "Words_Length.json")))
     word_freq = json.load(open(os.path.join(assets, "Words_Frequency.json")))
     synonyms = json.load(open(os.path.join(assets, "Synonyms.json")))
@@ -276,3 +275,135 @@ def recursive_dup(root, hashes, auto):
             full = os.path.join(root, filenames)
             recursive_dup(full, hashes, auto)
 
+def empty_files(ns):
+    nspace = ns
+    exists = os.path.exists
+    isdir = os.path.isdir
+    if not ns.path:
+        extfilt = [x for x in ns.ex_ext if exists(x) and isdir(x)]
+        if len(extfilt) > 0:
+            ns.path = extfilt
+            ns.ex_ext = ns.ex_ext[: -len(extfilt)]
+        else:
+            ns.path = [x for x in ns.ex_names if exists(x) and isdir(x)]
+            ns.ex_names = ns.ex_names[: -len(ns.path)]
+    Remover(nspace)
+    return nspace
+
+
+class Remover:
+    """
+    Primary class for program, performing all documented functionality.
+
+    Methods
+    -------
+    __init__ : constructor
+    remove_empty_dirs : folder removal algorithm
+    remove_empty_files : file removal algorithm
+    remove : actual item removal
+    """
+
+    def __init__(self, args):
+        """
+        Construct the the Remover class.
+
+        Acts as an entrypoint to the Removal process.
+
+        Parameters
+        ----------
+        args : Namespace
+            argpase.Namespace object containing cli args.
+        """
+        self.ex_ext = args.ex_ext if args.ex_ext else []
+        self.ex_names = args.ex_names if args.ex_names else []
+        self.removed = []
+        self.paths: list = args.path
+        for path in self.paths:
+            path = Path(path)
+            if args.folders:
+                self.remove_empty_dirs(path)
+            else:
+                self.remove_empty_files(path)
+
+    def remove_empty_dirs(self, path: os.PathLike) -> list:
+        """
+        Traverse folder recusively looking for empty folders.
+
+        Parameters
+        ----------
+        path : os.PathLike
+            path to root folder
+
+        Returns
+        -------
+        list
+            list of folders removed
+        """
+        if os.path.isfile(path):
+            return self.removed
+        if os.path.isdir(path):
+            if os.path.basename(path) in self.ex_names:
+                print(f"Ignoring {str(path)}...")
+                return self.removed
+            try:
+                contents = os.listdir(path)
+            except PermissionError:  # pragma: nocover
+                print(f"Access denied: {str(path)}")
+                return self.removed
+            if len(contents) == 0:
+                self.remove(path)
+                self.removed.append(str(path))
+                print(f"# {len(self.removed)}: {str(path)}")
+                return self.removed
+            for subpath in contents:
+                full = os.path.join(path, subpath)
+                self.remove_empty_dirs(full)
+        return self.removed
+
+    @staticmethod
+    def remove(path: os.PathLike):
+        """
+        Delete files and folders in an unrecoverable way.
+
+        Parameters
+        ----------
+        path : os.PathLike
+            path to file or folder that needs removing
+        """
+        if os.path.isfile(path):
+            os.remove(path)
+        elif os.path.isdir(path):
+            shutil.rmtree(path)
+
+    def remove_empty_files(self, path: os.PathLike) -> list:
+        """
+        Traverse directory in search for empty 0 length files.
+
+        Parameters
+        ----------
+        path : os.PathLike
+            path to root directory
+
+        Returns
+        -------
+        list
+            list of removed files.
+        """
+        if path.is_file():
+            name, ext = path.name, path.suffix.lower()
+            if name not in self.ex_names and ext not in self.ex_ext:
+                size = os.path.getsize(path)
+                if size == 0:
+                    self.removed.append(str(path))
+                    self.remove(path)
+                    print(f"# {len(self.removed)}: {str(path)}")
+                    return self.removed
+            else:
+                print(f"Ignoring {str(path)}...")
+        elif path.is_dir():
+            try:
+                for item in path.iterdir():
+                    self.remove_empty_files(item)
+            except PermissionError:  # pragma: nocover
+                print(f"Access denied: {str(path)}")
+        return self.removed

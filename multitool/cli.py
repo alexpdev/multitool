@@ -1,7 +1,7 @@
 import argparse
 import sys
 
-from multitool.runner import binprint, contains, synonyms, dirinfo, utf, ordprint, find_duplicates
+from multitool.runner import binprint, contains, synonyms, dirinfo, utf, ordprint, find_duplicates, empty_files
 
 
 def execute(args=None):
@@ -9,10 +9,10 @@ def execute(args=None):
     Operate the main function for program.
     """
     if not args:
-        args = sys.argv
-
-    if len(args) <= 1:
-        args.append("-h")
+        if not sys.argv[1:]:
+            args = ["-h"]
+        else:
+            args = sys.argv[1:]
 
     parser = argparse.ArgumentParser(
         "multitool", description="Multitool CLI", prefix_chars="-"
@@ -33,6 +33,43 @@ def execute(args=None):
     ordparser.set_defaults(func=ordprint)
 
     synparse = parsers.add_parser("syn", help="get synonyms for commong words")
+
+    emptyparser = parsers.add_parser("empty", help="Empty file remover")
+
+    emptyparser.add_argument(
+        "path",
+        help="base directory and starting point.",
+        nargs="*",
+        action="store",
+    )
+
+    emptyparser.add_argument(
+        "-d",
+        "--dir",
+        help="remove empty directories instead of empty files.",
+        dest="folders",
+        action="store_true",
+    )
+
+    emptyparser.add_argument(
+        "--exclude-names",
+        help="one or more file/directory names that will be ignored while "
+        "searching for items to remove.",
+        nargs="+",
+        dest="ex_names",
+        default=[],
+    )
+
+    emptyparser.add_argument(
+        "--exclude-ext",
+        help="one or more file extensions to be ignored during "
+        "file/directory analysis.",
+        nargs="+",
+        dest="ex_ext",
+        default=[],
+    )
+
+    emptyparser.set_defaults(func=empty_files)
 
     synparse.add_argument(
         "word",
@@ -169,6 +206,9 @@ def execute(args=None):
 
     dupparser.set_defaults(func=find_duplicates)
 
-    namespace = parser.parse_args(args[1:])
+
+    namespace = parser.parse_args(args)
+
+    print(namespace)
 
     return namespace.func(namespace)

@@ -4,7 +4,7 @@ from multitool import execute
 
 
 def main():
-    execute(sys.argv)
+    execute()
 
 
 if __name__ == "__main__":
