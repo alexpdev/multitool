@@ -171,6 +171,8 @@ def test_remover(tempdir):
         path = [tempdir]
         folders = True
         ex_ext = []
+        confirm = False
+        list = False
         ex_names = []
 
     Remover(Namespace)

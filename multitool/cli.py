@@ -74,6 +74,22 @@ def execute(args=None):
         default=[],
     )
 
+    emptyparser.add_argument(
+        "-l",
+        "--list",
+        help="list the files to be deleted",
+        action="store_true",
+        dest="list",
+    )
+
+    emptyparser.add_argument(
+        "-c",
+        "--confirm",
+        help="require confirmation before deleting",
+        action="store_true",
+        dest="confirm",
+    )
+
     emptyparser.set_defaults(func=empty_files)
 
     synparse.add_argument(

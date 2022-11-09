@@ -7,7 +7,7 @@ name = "apmultitool"
 authors = [{name = "alexpdev", email = "alexpdev@pm.me"}]
 description = "CLI Multitool."
 license = {file = "LICENSE"}
-version = "0.1.6"
+version = "0.1.7"
 readme = "README.md"
 requires-python = ">=3.6"
 keywords = ["CLI"]

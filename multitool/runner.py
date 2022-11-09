@@ -323,6 +323,8 @@ class Remover:
         self.ex_names = args.ex_names if args.ex_names else []
         self.removed = []
         self.paths: list = args.path
+        self.confirm = args.confirm
+        self.list = args.list
         for path in self.paths:
             path = Path(path)
             if args.folders:
@@ -356,7 +358,19 @@ class Remover:
                 print(f"Access denied: {str(path)}")
                 return self.removed
             if len(contents) == 0:
-                self.remove(path)
+                if not self.list:
+                    if self.confirm:
+                        result = input(f"Remove: {path} ? (y/n) ")
+                        if result.lower() not in [
+                            "n",
+                            "no",
+                            "f",
+                            "false",
+                            "0",
+                        ]:
+                            self.remove(path)
+                    else:
+                        self.remove(path)
                 self.removed.append(str(path))
                 print(f"# {len(self.removed)}: {str(path)}")
                 return self.removed
@@ -400,7 +414,19 @@ class Remover:
                 size = os.path.getsize(path)
                 if size == 0:
                     self.removed.append(str(path))
-                    self.remove(path)
+                    if not self.list:
+                        if self.confirm:
+                            result = input(f"Remove: {path} ? (y/n) ")
+                            if result.lower() not in [
+                                "n",
+                                "no",
+                                "f",
+                                "false",
+                                "0",
+                            ]:
+                                self.remove(path)
+                        else:
+                            self.remove(path)
                     print(f"# {len(self.removed)}: {str(path)}")
                     return self.removed
             else:
