@@ -1,14 +1,16 @@
 import json
 import os
-import sys
 import shutil
-from pathlib import Path
+import sys
 from hashlib import sha1
+from pathlib import Path
+
 
 class Words:
     """
     Namespace containing reference documents for gathering data.
     """
+
     assets = os.path.join(os.path.dirname(os.path.abspath(__file__)), "assets")
     all_words = json.load(open(os.path.join(assets, "Words_Length.json")))
     word_freq = json.load(open(os.path.join(assets, "Words_Frequency.json")))
@@ -28,7 +30,7 @@ def ordprint(namespace):
     """
     print(namespace)
     chars = namespace.chars
-    result = ', '.join([str(ord(i)) for i in chars])
+    result = ", ".join([str(ord(i)) for i in chars])
     print(result)
     return result
 
@@ -187,7 +189,7 @@ def utf(args):
     """
     Convert character codes to their utf-8 symbol.
     """
-    sys.stdout.write('----------------------\n\n')
+    sys.stdout.write("----------------------\n\n")
     if args.number:
         for num in args.number:
             if args.list:
@@ -204,7 +206,7 @@ def utf(args):
                 sys.stdout.write(f"({i}: {chr(i)} ) ")
             else:
                 sys.stdout.write(chr(i))
-    sys.stdout.write('\n\n----------------------')
+    sys.stdout.write("\n\n----------------------")
     return True
 
 
@@ -220,6 +222,7 @@ def walk_path(root):
             size += s1
     return count, size
 
+
 def dirinfo(nspace):
     path = Path(nspace.path)
     count, size = walk_path(path)
@@ -230,6 +233,7 @@ def dirinfo(nspace):
         out += f"{path}| Total Size = {size}\n"
     show(out)
     return True
+
 
 def find_duplicates(nspace):
     path = nspace.dir
@@ -242,7 +246,7 @@ def find_duplicates(nspace):
         for file in filenames:
             full = os.path.join(path, file)
             if os.path.isfile(full):
-                digest = sha1(open(full, "rb").read()).digest()
+                digest = sha1(open(full, "rb").read()).digest()  # nosec
                 if digest not in hashes:
                     hashes[digest] = full
                 else:
@@ -258,7 +262,7 @@ def find_duplicates(nspace):
 
 def recursive_dup(root, hashes, auto):
     if os.path.isfile(root):
-        digest = sha1(open(root, "rb").read()).digest()
+        digest = sha1(open(root, "rb").read()).digest()  # nosec
         if digest not in hashes:
             hashes[digest] = root
         else:
@@ -274,6 +278,7 @@ def recursive_dup(root, hashes, auto):
         for filenames in os.listdir(root):
             full = os.path.join(root, filenames)
             recursive_dup(full, hashes, auto)
+
 
 def empty_files(ns):
     nspace = ns

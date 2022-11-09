@@ -1,4 +1,3 @@
-
 import atexit
 import os
 import shutil
@@ -11,10 +10,7 @@ import pytest
 from multitool import execute
 from multitool.__main__ import main
 from multitool.runner import Remover
-
 from tests.conf import a, b, c
-
-
 
 
 @pytest.mark.parametrize("val", a)
@@ -35,6 +31,7 @@ def test_utf(val):
     key, val = val
     sys.argv = ["mtool", "utf", str(key)]
     assert execute()
+
 
 @pytest.mark.parametrize("val", c)
 def test_bin(val):
@@ -83,7 +80,7 @@ def test_cli_standard(tempdir):
     """
     Test the cli in standard mode.
     """
-    sys.argv = ["multitool", 'empty', tempdir]
+    sys.argv = ["multitool", "empty", tempdir]
     execute()
     assert not os.path.exists(join(tempdir, "subdir1", "file1.mp4"))
     assert not os.path.exists(join(tempdir, "subdir2", "file0.py"))
@@ -153,7 +150,14 @@ def test_help_message():
 
 def test_main_module(tempdir):
     """Test main module."""
-    sys.argv = ["multitool", "empty", "-d", tempdir, "--exclude-name", "subdir3"]
+    sys.argv = [
+        "multitool",
+        "empty",
+        "-d",
+        tempdir,
+        "--exclude-name",
+        "subdir3",
+    ]
     main()
     assert os.path.exists(join(tempdir, "subdir3"))
 

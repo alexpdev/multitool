@@ -1,7 +1,8 @@
 import argparse
 import sys
 
-from multitool.runner import binprint, contains, synonyms, dirinfo, utf, ordprint, find_duplicates, empty_files
+from multitool.runner import (binprint, contains, dirinfo, empty_files,
+                              find_duplicates, ordprint, synonyms, utf)
 
 
 def execute(args=None):
@@ -26,9 +27,13 @@ def execute(args=None):
 
     binparser.set_defaults(func=binprint)
 
-    ordparser = parsers.add_parser("ord", help="Convert characters into ordinal")
+    ordparser = parsers.add_parser(
+        "ord", help="Convert characters into ordinal"
+    )
 
-    ordparser.add_argument("chars", help="Characters to convert", action="store")
+    ordparser.add_argument(
+        "chars", help="Characters to convert", action="store"
+    )
 
     ordparser.set_defaults(func=ordprint)
 
@@ -121,7 +126,9 @@ def execute(args=None):
 
     containsparser.set_defaults(func=contains)
 
-    utfparser = parsers.add_parser("utf", help="print unicode characters to terminal")
+    utfparser = parsers.add_parser(
+        "utf", help="print unicode characters to terminal"
+    )
 
     utfparser.add_argument(
         "number",
@@ -137,7 +144,7 @@ def execute(args=None):
         nargs=2,
         metavar="<number>",
         dest="range",
-        action="store"
+        action="store",
     )
 
     utfparser.add_argument(
@@ -159,20 +166,17 @@ def execute(args=None):
 
     dirparser = parsers.add_parser("dir", help="directory information")
 
-    dirparser.add_argument('path', help="directory path")
+    dirparser.add_argument("path", help="directory path")
 
     dirparser.add_argument(
-        "-s",
-        help="total size of contents",
-        dest="size",
-        action="store_true"
+        "-s", help="total size of contents", dest="size", action="store_true"
     )
 
     dirparser.add_argument(
         "-c",
         dest="count",
         help="total count of all files recusively",
-        action="store_true"
+        action="store_true",
     )
 
     dirparser.set_defaults(func=dirinfo)
@@ -186,7 +190,7 @@ def execute(args=None):
         "--auto",
         action="store_true",
         dest="auto",
-        help="don't prompt before deleting"
+        help="don't prompt before deleting",
     )
 
     dupparser.add_argument(
@@ -198,14 +202,10 @@ def execute(args=None):
     )
 
     dupparser.add_argument(
-        "dir",
-        action="store",
-        metavar="<dir>",
-        help="directory to search."
+        "dir", action="store", metavar="<dir>", help="directory to search."
     )
 
     dupparser.set_defaults(func=find_duplicates)
-
 
     namespace = parser.parse_args(args)
 

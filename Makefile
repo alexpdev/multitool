@@ -38,7 +38,11 @@ clean-build: ## remove build artifacts
 	rm -f **.pyc
 	rm -f **.pyo
 	rm -f **~
+	rm -rfv **/*.pyc
 	rm -fr **/__pycache__
+	rm -frv **/**/__pycache__
+	rm -frv **/**/**/__pycache__
+	rm -frv **/**/**/**/__pycache__
 	rm -fr .tox/
 	rm -f .coverage
 	rm -fr htmlcov/
@@ -62,13 +66,13 @@ lint: ## check style with flake8
 	prospector tests
 
 test: ## run tests quickly with the default Python
-	pytest tests --cov
+	tox
 
 coverage: ## check code coverage quickly with the default Python
 	coverage run -m pytest tests --cov --pylint
 	coverage xml -o coverage.xml
 
-push: lint docs clean test coverage
+push: clean test
 	git add .
 	git commit -m "generic message"
 	git push
@@ -81,11 +85,8 @@ release: dist ## package and upload a release
 	twine upload dist/*
 
 dist: clean ## builds source and wheel package
-	python setup.py build
-	python setup.py sdist
-	python setup.py bdist_wheel
-	python setup.py bdist_egg
+	python -m build .
 	ls -l dist
 
 install: clean ## install the package to the active Python's site-packages
-	python setup.py install
+	python -m build .
